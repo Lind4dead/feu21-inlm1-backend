@@ -98,11 +98,16 @@ namespace Inlm_1_backend.Controllers
         {
             try
             {
-                var issue = await _context.Issues.Include(x => x.Status).Include(x => x.Comments).Include(x => x.User).FirstOrDefaultAsync(x => x.Id == id);
+                var issue = await _context.Issues.Include(x => x.Status).Include(x => x.User).Include(x => x.Comments).FirstOrDefaultAsync(x => x.Id == id);
+                if(issue != null)
+                {
+
                 var comments = new List<CommentResponse>();
-                foreach(var comment in await _context.Comments.Include(x => x.User).ToListAsync())
-                    if(comment.IssueId == id)
+                    if(issue.Comments != null)
                     {
+
+                foreach(var comment in issue.Comments)
+                    
                         comments.Add(new CommentResponse
                         {
                             Id = comment.Id,
@@ -111,8 +116,9 @@ namespace Inlm_1_backend.Controllers
                             UserName = comment.User.FirstName
                         });
                     }
+                    
 
-                if (issue != null)
+                
                     return new OkObjectResult(new IssueResponse
                     {
                         Id = issue.Id,
@@ -124,6 +130,7 @@ namespace Inlm_1_backend.Controllers
                         StatusId = issue.StatusId,
                         Email = issue.User.Email
                     });
+                }
             }
             catch (Exception ex)
             {

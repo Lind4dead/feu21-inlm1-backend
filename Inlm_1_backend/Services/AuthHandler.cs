@@ -34,7 +34,7 @@ namespace Inlm_1_backend.Services
 
             var token = new JwtSecurityToken(
                 claims: claims,
-                expires: DateTime.Now.AddHours(2),
+                expires: DateTime.Now.AddDays(1),
                 signingCredentials: creds
 
                 );
