@@ -12,7 +12,7 @@ namespace Inlm_1_backend.Models
         public int IssueId { get; set; }
         public Issue Issue { get; set; }
         public int UserId { get; set; }
-        public User User { get; set; }
+        public User User { get; set; } = null!;
 
     }
 }

@@ -78,37 +78,52 @@ namespace Inlm_1_backend.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            var issues = new List<IssueResponse>();
-            foreach (var issue in await _context.Issues.Include(x => x.Status).Include(x => x.User).Include(x => x.Comments).ToListAsync())
+            var authorization = Request.Headers[HeaderNames.Authorization];
+            if (AuthenticationHeaderValue.TryParse(authorization, out var headerValue))
             {
-                var comments = new List<CommentResponse>();
-                if (issue.Comments != null)
+                var bearer = headerValue.Scheme;
+                var token = headerValue.Parameter;
+                Console.WriteLine(token);
+                var _id = _auth.GetIdFromToken(token!);
+                var issues = new List<IssueResponse>();
+                foreach (var issue in await _context.Issues.Include(x => x.Status).Include(x => x.Comments).Include(x => x.User).ToListAsync())
                 {
+                    if(issue.UserId == _id)
+                    {
 
-                    foreach (var comment in issue.Comments)
+                    var comments = new List<CommentResponse>();
+                    if (issue.Comments != null)
+                    {
 
-                        comments.Add(new CommentResponse
-                        {
-                            Id = comment.Id,
-                            Created = comment.Created,
-                            Message = comment.Message,
-                            UserName = comment.User.FirstName
-                        });
+                        foreach (var comment in issue.Comments)
+
+                            comments.Add(new CommentResponse
+                            {
+                                Id = comment.Id,
+                                Created = comment.Created,
+                                Message = comment.Message,
+                                UserName = comment.User.FirstName
+
+                            });
+                    }
+
+                    issues.Add(new IssueResponse
+                    {
+                        Id = issue.Id,
+                        Created = issue.Created,
+                        Subject = issue.Subject,
+                        Message = issue.Description,
+                        Status = issue.Status.Name,
+                        Email = issue.User.Email,
+                        Comments = comments
+                    });
+
+                    }
                 }
-
-                issues.Add(new IssueResponse
-                {
-                    Id = issue.Id,
-                    Created = issue.Created,
-                    Subject = issue.Subject,
-                    Message = issue.Description,
-                    Status = issue.Status.Name,
-                    Email = issue.User.Email,
-                    Comments = comments
-                });
-
-            }
             return new OkObjectResult(issues);
+            }
+            return new OkResult();
+            
         }
 
         [HttpGet("{id}")]
@@ -132,6 +147,7 @@ namespace Inlm_1_backend.Controllers
                             Created = comment.Created,
                             Message = comment.Message,
                             UserName = comment.User.FirstName
+                            
                         });
                     }
                     

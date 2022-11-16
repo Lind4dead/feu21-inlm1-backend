@@ -49,7 +49,7 @@ namespace Inlm_1_backend.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Comments");
+                    b.ToTable("Comments", (string)null);
                 });
 
             modelBuilder.Entity("Inlm_1_backend.Models.Issue", b =>
@@ -83,7 +83,7 @@ namespace Inlm_1_backend.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Issues");
+                    b.ToTable("Issues", (string)null);
                 });
 
             modelBuilder.Entity("Inlm_1_backend.Models.Status", b =>
@@ -100,7 +100,7 @@ namespace Inlm_1_backend.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Statuses");
+                    b.ToTable("Statuses", (string)null);
                 });
 
             modelBuilder.Entity("Inlm_1_backend.Models.User", b =>
@@ -133,7 +133,7 @@ namespace Inlm_1_backend.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Users");
+                    b.ToTable("Users", (string)null);
                 });
 
             modelBuilder.Entity("Inlm_1_backend.Models.Comment", b =>

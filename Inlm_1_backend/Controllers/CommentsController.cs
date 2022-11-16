@@ -46,7 +46,7 @@ namespace Inlm_1_backend.Controllers
                 _context.Add(_comment);
                 await _context.SaveChangesAsync();
 
-                var comment = await _context.Comments.Include(x => x.Issue).FirstOrDefaultAsync(x => x.Id == _comment.Id);
+                var comment = await _context.Comments.Include(x => x.Issue).Include(x => x.User).FirstOrDefaultAsync(x => x.Id == _comment.Id);
                 var response = new CommentResponse
                 {
                     Id = _comment.Id,
