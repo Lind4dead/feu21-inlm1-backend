@@ -79,7 +79,23 @@ namespace Inlm_1_backend.Controllers
         public async Task<IActionResult> GetAll()
         {
             var issues = new List<IssueResponse>();
-            foreach (var issue in await _context.Issues.Include(x => x.Status).Include(x => x.User).ToListAsync())
+            foreach (var issue in await _context.Issues.Include(x => x.Status).Include(x => x.User).Include(x => x.Comments).ToListAsync())
+            {
+                var comments = new List<CommentResponse>();
+                if (issue.Comments != null)
+                {
+
+                    foreach (var comment in issue.Comments)
+
+                        comments.Add(new CommentResponse
+                        {
+                            Id = comment.Id,
+                            Created = comment.Created,
+                            Message = comment.Message,
+                            UserName = comment.User.FirstName
+                        });
+                }
+
                 issues.Add(new IssueResponse
                 {
                     Id = issue.Id,
@@ -87,9 +103,11 @@ namespace Inlm_1_backend.Controllers
                     Subject = issue.Subject,
                     Message = issue.Description,
                     Status = issue.Status.Name,
-                    Email = issue.User.Email
+                    Email = issue.User.Email,
+                    Comments = comments
                 });
 
+            }
             return new OkObjectResult(issues);
         }
 
